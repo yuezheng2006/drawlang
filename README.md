@@ -5,13 +5,27 @@
 
 **[中文文档](README.zh-CN.md)**
 
+> **🆕 v1.5.0 — ModelScope Z-Image-Turbo Support (Mar 2026)**
+>
+> Added ModelScope Z-Image-Turbo as a third image generation provider with bilingual (EN/CN) support. Now supports three providers: Gemini, ModelScope, and OpenRouter. [Details →](#image-generation-providers)
+
 > **🆕 v1.4.0 — Tri-Engine System (Feb 2026)**
 >
 > New Excalidraw engine for hand-drawn concept diagrams. Three-tier priority: Gemini → Excalidraw → Mermaid. All diagram engines now output PNG by default. [Details →](#tri-engine-system)
 
 ![Tri-Engine Architecture](assets/dual-engine-architecture.png)
 
-Intelligent article illustration Skill for Claude Code with **tri-engine system**: automatically selects Gemini (for creative visuals), Excalidraw (for hand-drawn diagrams), or Mermaid (for structured diagrams) based on content type.
+Intelligent article illustration Skill for Claude Code with **tri-engine system** and **multi-provider support**: automatically selects the best rendering engine (Gemini/Excalidraw/Mermaid) and image generation provider (Gemini/ModelScope/OpenRouter) based on content type and availability.
+
+## ✨ Key Features of This Fork
+
+This fork extends the original smart-illustrator with:
+
+- **🇨🇳 ModelScope Z-Image-Turbo Integration**: Native Chinese language support with fast inference
+- **🔄 Multi-Provider Flexibility**: Auto-detect and fallback between OpenRouter, ModelScope, and Gemini
+- **💰 Cost Optimization**: Free tier available with ModelScope API
+- **🚀 Async Task Processing**: Efficient polling-based image generation
+- **🔒 Backward Compatible**: All existing Gemini and OpenRouter features preserved
 
 ## Status
 
@@ -24,11 +38,11 @@ Intelligent article illustration Skill for Claude Code with **tri-engine system*
 
 ## Why Smart Illustrator?
 
-Creating illustrations for articles is time-consuming: manual design takes hours, stock photos lack context, and generic AI tools don't understand article structure. Smart Illustrator combines intelligent position detection, tri-engine system (Gemini + Excalidraw + Mermaid), and cover learning to generate contextual illustrations in minutes.
+Creating illustrations for articles is time-consuming: manual design takes hours, stock photos lack context, and generic AI tools don't understand article structure. Smart Illustrator combines intelligent position detection, tri-engine system (Gemini + Excalidraw + Mermaid), multi-provider support (Gemini + ModelScope + OpenRouter), and cover learning to generate contextual illustrations in minutes.
 
-**Who it's for:** Newsletter writers, YouTube creators, technical bloggers, course instructors.
+**Who it's for:** Newsletter writers, YouTube creators, technical bloggers, course instructors, especially those creating content in Chinese or requiring bilingual support.
 
-**When to use:** When you need high-quality illustrations for articles, YouTube thumbnails with best practices, or consistent visual style across content series.
+**When to use:** When you need high-quality illustrations for articles, YouTube thumbnails with best practices, consistent visual style across content series, or cost-effective image generation with Chinese language support.
 
 ## Background: the Make workflow version (auto-illustrate + WeChat publish)
 
@@ -40,6 +54,7 @@ https://youtu.be/TbyJ3imLuXQ
 
 ## Features
 
+- **Multi-Provider Support**: Choose from Gemini, ModelScope Z-Image-Turbo, or OpenRouter
 - **Tri-Engine System**: Auto-selects Gemini, Excalidraw, or Mermaid based on content type
 - **Smart Position Detection**: Analyzes article structure to identify optimal illustration points
 - **10+ Illustration Types**: flowchart, sequence, mindmap, concept, comparison, scene, metaphor...
@@ -48,7 +63,21 @@ https://youtu.be/TbyJ3imLuXQ
 - **Multi-Platform Sizes**: YouTube, WeChat, Twitter, Xiaohongshu presets
 - **Resume Generation**: Skip already-generated images, regenerate specific ones
 - **Brand Customizable**: Modify `styles/` to apply your brand style
-- **Multiple Backends**: Gemini API for creative visuals (2K resolution), Excalidraw for hand-drawn diagrams, Mermaid CLI for structured diagrams — all output PNG by default
+- **Bilingual Support**: Native Chinese and English text rendering with ModelScope
+- **Cost Optimization**: Free tier available with ModelScope API
+- **Multiple Backends**: Gemini API for creative visuals (2K resolution), ModelScope for fast bilingual generation, Excalidraw for hand-drawn diagrams, Mermaid CLI for structured diagrams — all output PNG by default
+
+## Image Generation Providers
+
+This tool supports three image generation providers with automatic fallback:
+
+| Provider | Best For | Pros | Cons |
+|----------|----------|------|------|
+| **Gemini** | Creative visuals, high-quality illustrations | Excellent quality, 2K resolution, rich details | Paid API ($0.134/image) |
+| **ModelScope** | Chinese content, bilingual projects, cost-sensitive | Free tier, fast inference, native CN support | Async processing (polling required) |
+| **OpenRouter** | Spending control, API aggregation | Spending limits, unified interface | Same pricing as Gemini |
+
+**Auto-detection priority**: OpenRouter → ModelScope → Gemini (based on available API keys)
 
 ## What Are Skills?
 
@@ -71,7 +100,7 @@ Skills are prompt-based extensions for [Claude Code](https://docs.anthropic.com/
 
 ```bash
 # Clone to Claude Code Skills directory
-git clone https://github.com/axtonliu/smart-illustrator.git ~/.claude/skills/smart-illustrator
+git clone https://github.com/yuezheng2006/smart-illustrator.git ~/.claude/skills/smart-illustrator
 ```
 
 ### Option B: Copy Individual Files
