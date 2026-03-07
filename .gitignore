@@ -1,0 +1,48 @@
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Test outputs (optional - comment out if you want to commit examples)
+test-output/
+
+# Sensitive/private files
+references/文章自动配图工具.md
+
+# Internal development documents (kept locally, not for public repo)
+CLAUDE.md
+DEVELOPMENT.md
+PROGRESS.md
+TEST-PLAN.md
+DESIGN-*.md
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+bun-debug.log*
+
+# Temporary files
+*.tmp
+*.temp
+.cache/
+
+# Build outputs (if any)
+dist/
+build/
+out/
