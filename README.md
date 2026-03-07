@@ -1,771 +1,316 @@
-# Smart Illustrator
+# Smart Illustrator - 中文优先的 AI 配图工具
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Status: Experimental](https://img.shields.io/badge/Status-Experimental-orange.svg)](#status)
+[![ModelScope](https://img.shields.io/badge/ModelScope-Z--Image--Turbo-blue)](https://modelscope.cn/models/Tongyi-MAI/Z-Image-Turbo)
 
-**[中文文档](README.zh-CN.md)**
+**[中文文档](README.zh-CN.md)** | English
 
-> **🆕 v1.5.0 — ModelScope Z-Image-Turbo Support (Mar 2026)**
+> **🎯 专为中文内容创作者优化的 AI 配图工具**
 >
-> Added ModelScope Z-Image-Turbo as a third image generation provider with bilingual (EN/CN) support. Now supports three providers: Gemini, ModelScope, and OpenRouter. [Details →](#image-generation-providers)
+> 原生支持中文 Prompt，免费额度，快速生成，完美适配公众号、小红书、B站等中文平台
 
-> **🆕 v1.4.0 — Tri-Engine System (Feb 2026)**
->
-> New Excalidraw engine for hand-drawn concept diagrams. Three-tier priority: Gemini → Excalidraw → Mermaid. All diagram engines now output PNG by default. [Details →](#tri-engine-system)
+## 🌟 核心优势
 
-![Tri-Engine Architecture](assets/dual-engine-architecture.png)
+### 1. 🇨🇳 中文原生支持
+- **ModelScope Z-Image-Turbo**：阿里通义万相模型，原生理解中文 Prompt
+- **双语文本渲染**：图片中的中英文文字清晰可读，无乱码
+- **中文场景优化**：理解中国文化元素和视觉习惯
 
-Intelligent article illustration Skill for Claude Code with **tri-engine system** and **multi-provider support**: automatically selects the best rendering engine (Gemini/Excalidraw/Mermaid) and image generation provider (Gemini/ModelScope/OpenRouter) based on content type and availability.
+### 2. 💰 成本优势明显
+- **免费额度**：ModelScope 提供免费调用额度
+- **按需付费**：超出免费额度后按量计费，成本可控
+- **多提供商切换**：支持 Gemini、OpenRouter 备选，灵活切换
 
-## ✨ Key Features of This Fork
+### 3. ⚡ 快速高效
+- **亚秒级推理**：Z-Image-Turbo 模型针对速度优化
+- **异步处理**：后台生成，不阻塞工作流
+- **批量生成**：支持一次生成多张图片
 
-This fork extends the original smart-illustrator with:
+### 4. 🎨 中文平台适配
+- **公众号**：2.35:1 横图，完美适配公众号封面
+- **小红书**：3:4 竖图，符合小红书展示规范
+- **B站**：16:9 横图，适合视频封面
+- **知乎/简书**：多种尺寸预设
 
-- **🇨🇳 ModelScope Z-Image-Turbo Integration**: Native Chinese language support with fast inference
-- **🔄 Multi-Provider Flexibility**: Auto-detect and fallback between OpenRouter, ModelScope, and Gemini
-- **💰 Cost Optimization**: Free tier available with ModelScope API
-- **🚀 Async Task Processing**: Efficient polling-based image generation
-- **🔒 Backward Compatible**: All existing Gemini and OpenRouter features preserved
+## 🚀 快速开始
 
-## Status
-
-> **Status: Experimental**
->
-> - This is a public prototype that works for my demos, but does not yet cover all input scales and edge cases.
-> - Output quality varies based on model version and input structure; results may fluctuate.
-> - My primary focus is demonstrating how tools and systems work together, not maintaining this codebase.
-> - If you encounter issues, please submit a reproducible case (input + output file + steps to reproduce).
-
-## Why Smart Illustrator?
-
-Creating illustrations for articles is time-consuming: manual design takes hours, stock photos lack context, and generic AI tools don't understand article structure. Smart Illustrator combines intelligent position detection, tri-engine system (Gemini + Excalidraw + Mermaid), multi-provider support (Gemini + ModelScope + OpenRouter), and cover learning to generate contextual illustrations in minutes.
-
-**Who it's for:** Newsletter writers, YouTube creators, technical bloggers, course instructors, especially those creating content in Chinese or requiring bilingual support.
-
-**When to use:** When you need high-quality illustrations for articles, YouTube thumbnails with best practices, consistent visual style across content series, or cost-effective image generation with Chinese language support.
-
-## Background: the Make workflow version (auto-illustrate + WeChat publish)
-
-Before packaging this into a Skill, I had already built an end-to-end Make workflow:
-**search → write → auto-illustrate → format/publish (WeChat Official Account)**.
-
-Full walkthrough (workflow logic & design trade-offs):
-https://youtu.be/TbyJ3imLuXQ
-
-## Features
-
-- **Multi-Provider Support**: Choose from Gemini, ModelScope Z-Image-Turbo, or OpenRouter
-- **Tri-Engine System**: Auto-selects Gemini, Excalidraw, or Mermaid based on content type
-- **Smart Position Detection**: Analyzes article structure to identify optimal illustration points
-- **10+ Illustration Types**: flowchart, sequence, mindmap, concept, comparison, scene, metaphor...
-- **Extensible Style System**: Light, Dark, Minimal, Cover, and custom styles
-- **Cover Mode**: Generate high-CTR YouTube thumbnails with best practices built-in
-- **Multi-Platform Sizes**: YouTube, WeChat, Twitter, Xiaohongshu presets
-- **Resume Generation**: Skip already-generated images, regenerate specific ones
-- **Brand Customizable**: Modify `styles/` to apply your brand style
-- **Bilingual Support**: Native Chinese and English text rendering with ModelScope
-- **Cost Optimization**: Free tier available with ModelScope API
-- **Multiple Backends**: Gemini API for creative visuals (2K resolution), ModelScope for fast bilingual generation, Excalidraw for hand-drawn diagrams, Mermaid CLI for structured diagrams — all output PNG by default
-
-## Image Generation Providers
-
-This tool supports three image generation providers with automatic fallback:
-
-| Provider | Best For | Pros | Cons |
-|----------|----------|------|------|
-| **Gemini** | Creative visuals, high-quality illustrations | Excellent quality, 2K resolution, rich details | Paid API ($0.134/image) |
-| **ModelScope** | Chinese content, bilingual projects, cost-sensitive | Free tier, fast inference, native CN support | Async processing (polling required) |
-| **OpenRouter** | Spending control, API aggregation | Spending limits, unified interface | Same pricing as Gemini |
-
-**Auto-detection priority**: OpenRouter → ModelScope → Gemini (based on available API keys)
-
-## What Are Skills?
-
-Skills are prompt-based extensions for [Claude Code](https://docs.anthropic.com/en/docs/claude-code) that give Claude specialized capabilities. Unlike MCP servers that require complex setup, skills are simple markdown files that Claude loads on demand.
-
-## Installation
-
-### Prerequisites
-
-- [Claude Code CLI](https://docs.anthropic.com/en/docs/claude-code) installed
-- [Bun](https://bun.sh/) runtime (for scripts)
-- [Mermaid CLI](https://github.com/mermaid-js/mermaid-cli) (for Mermaid diagrams): `npm install -g @mermaid-js/mermaid-cli`
-- Excalidraw export dependencies (optional, for Excalidraw diagrams): `cd ~/.claude/skills/smart-illustrator/scripts && npm install && npx playwright install firefox`
-- **API Keys** (at least one required):
-  - Gemini API Key (recommended, for creative visuals): https://aistudio.google.com/apikey
-  - ModelScope API Key (alternative, for Z-Image-Turbo): https://modelscope.cn/my/myaccesstoken
-  - OpenRouter API Key (alternative): https://openrouter.ai/keys
-
-### Option A: Manual Installation (Recommended)
+### 安装
 
 ```bash
-# Clone to Claude Code Skills directory
+# 克隆到 Claude Code Skills 目录
 git clone https://github.com/yuezheng2006/smart-illustrator.git ~/.claude/skills/smart-illustrator
+
+# 安装依赖（可选，用于 Excalidraw 和 Mermaid）
+cd ~/.claude/skills/smart-illustrator/scripts
+npm install
+npx playwright install firefox
 ```
 
-### Option B: Copy Individual Files
+### 获取 ModelScope API Key
+
+1. 访问 [ModelScope 个人中心](https://modelscope.cn/my/myaccesstoken)
+2. 创建 API Token
+3. 设置环境变量：
 
 ```bash
-# If you only want the skill without scripts
-cp -r smart-illustrator/SKILL.md ~/.claude/skills/smart-illustrator/
-cp -r smart-illustrator/styles ~/.claude/skills/smart-illustrator/
+export MODELSCOPE_API_KEY=ms-your-api-key
 ```
 
-## Usage
-
-### Basic Usage
+### 基本使用
 
 ```bash
-# Analyze article and auto-generate illustrations (default)
-/smart-illustrator path/to/article.md
-
-# Output prompts only, don't auto-generate images
-/smart-illustrator path/to/article.md --prompt-only
-
-# Specify style (loads from styles/ directory)
-/smart-illustrator path/to/article.md --style light     # Light style (default)
-/smart-illustrator path/to/article.md --style dark      # Dark tech style
-/smart-illustrator path/to/article.md --style minimal   # Minimal style
-
-# List available styles
-/smart-illustrator --list-styles
-
-# Without cover image
-/smart-illustrator path/to/article.md --no-cover
-
-# Specify number of illustrations
-/smart-illustrator path/to/article.md --count 5
-```
-
-### Parameters
-
-| Parameter | Default | Description |
-|-----------|---------|-------------|
-| `--mode` | `article` | Mode: `article`, `slides`, or `cover` |
-| `--engine` | `auto` | Engine: `auto`, `gemini`, `excalidraw`, or `mermaid` |
-| `--mermaid-embed` | `false` | Embed Mermaid code blocks instead of exporting PNG |
-| `--platform` | `youtube` | Cover platform: `youtube`/`wechat`/`twitter`/`xiaohongshu`/`landscape`/`square` |
-| `--topic` | - | Cover topic (alternative to article path, cover mode only) |
-| `--description` | - | Cover visual direction (cover mode only) |
-| `--prompt-only` | `false` | Output prompts only, don't call API to generate images |
-| `--style` | `light` | Style name, loads `styles/style-{name}.md` |
-| `--list-styles` | - | List all available styles in `styles/` directory |
-| `--no-cover` | `false` | Skip cover image generation (article mode) |
-| `--count` | auto | Number of illustrations (auto-determined by article length) |
-
-### Illustration Count Guidelines
-
-| Article Length | Suggested Count |
-|----------------|-----------------|
-| Short (< 1000 words) | 1-2 images |
-| Medium (1000-3000 words) | 2-4 images |
-| Long (> 3000 words) | 4-6 images |
-| Tutorials/Guides | 1 per major step |
-
-### Output Files
-
-```
-article.md                    # Original
-article-image.md              # Article with illustrations (main output)
-article-cover.png             # Cover image (16:9)
-article-image-01.png          # Content illustration (3:4)
-article-image-02.png
-article-image-03.png
-```
-
-### Manual Script Usage
-
-#### generate-image.ts (Single Image)
-
-```bash
-# Using Gemini API (recommended for creative visuals)
-export GEMINI_API_KEY=your_key
-
-# OR using ModelScope API (alternative, Z-Image-Turbo)
-export MODELSCOPE_API_KEY=your_key
-
-# OR using OpenRouter API
-export OPENROUTER_API_KEY=your_key
-
-# From prompt text
-npx -y bun ~/.claude/skills/smart-illustrator/scripts/generate-image.ts \
-  --prompt "A concept diagram showing..." \
-  --output image.png
-
-# From prompt file
-npx -y bun ~/.claude/skills/smart-illustrator/scripts/generate-image.ts \
-  --prompt-file prompt.md \
-  --output image.png
-```
-
-| Option | Description |
-|--------|-------------|
-| `-p, --prompt` | Image description text |
-| `-f, --prompt-file` | Read prompt from file |
-| `-o, --output` | Output path (default: generated.png) |
-| `-m, --model` | Model name |
-| `--provider` | API provider: `openrouter`, `gemini`, or `modelscope` (auto-detected) |
-| `--size` | Image size: `2k` (default) or `default` |
-| `-a, --aspect-ratio` | Aspect ratio: `1:1`, `3:4`, `4:3`, `9:16`, `16:9`, `21:9`, etc. |
-
-#### batch-generate.ts (Batch Generation)
-
-```bash
-export GEMINI_API_KEY=your_key
-
-npx -y bun ~/.claude/skills/smart-illustrator/scripts/batch-generate.ts \
-  --config slides.json \
-  --output-dir ./images \
-  --prefix SKILL_01
-```
-
-| Option | Description |
-|--------|-------------|
-| `-c, --config` | JSON config file (required) |
-| `-o, --output-dir` | Output directory (default: ./illustrations) |
-| `-m, --model` | Model (default: gemini-3-pro-image-preview) |
-| `-d, --delay` | Delay between requests in ms (default: 2000) |
-| `-p, --prefix` | Filename prefix (default: from config filename) |
-| `-r, --regenerate` | Regenerate specific images (e.g., "3" or "3,5,7") |
-| `-f, --force` | Force regenerate all images (ignore existing) |
-
-**Resume Generation**: By default, the script skips images that already exist in the output directory. This allows resuming interrupted generation without re-generating completed images.
-
-Output: `{prefix}-01.png`, `{prefix}-02.png`, etc.
-
-#### mermaid-export.ts (Mermaid to PNG)
-
-```bash
-# From .mmd file
-npx -y bun ~/.claude/skills/smart-illustrator/scripts/mermaid-export.ts \
-  --input diagram.mmd \
-  --output diagram.png
-
-# From inline content
-npx -y bun ~/.claude/skills/smart-illustrator/scripts/mermaid-export.ts \
-  --content "flowchart LR
-    A[Start] --> B[End]" \
-  --output simple.png \
-  --theme dark
-```
-
-| Option | Description |
-|--------|-------------|
-| `-i, --input` | Input .mmd file path |
-| `-c, --content` | Mermaid diagram content (alternative) |
-| `-o, --output` | Output path (default: output.png) |
-| `-t, --theme` | Theme: `light` (default) or `dark` |
-| `-w, --width` | Image width in pixels |
-| `-H, --height` | Image height in pixels |
-
-## PPT/Slides Generation Mode
-
-Beyond article illustrations, this skill can generate batch infographics for PPT/Keynote slides.
-
-### When to Use
-
-| Mode | Use Case | Output |
-|------|----------|--------|
-| **Article Mode** | Blog posts, newsletters | 3-5 illustrations inserted in article |
-| **Slides Mode** | Video B-roll, presentations | 8-15 standalone infographics |
-
-### JSON Format for Batch Generation
-
-Use `pictures[]` array format with explicit batch rules:
-
-```json
-{
-  "instruction": "请为我绘制 7 张图片（generate 7 images）。你是一位「信息图绘制者」。请逐条执行 pictures 数组：每个 id 对应 1 张独立的 16:9 信息图，严禁合并，严禁只输出文字描述。",
-  "batch_rules": {
-    "total": 7,
-    "one_item_one_image": true,
-    "aspect_ratio": "16:9",
-    "do_not_merge": true
-  },
-  "fallback": "如果无法一次生成全部图片：请输出 7 条独立的单图绘图指令...",
-  "style": "[Complete style prompt - see styles/style-light.md]",
-  "pictures": [
-    { "id": 1, "topic": "封面", "content": "Course Name\n\nSection Title\n\nLearning objectives..." },
-    { "id": 2, "topic": "核心概念", "content": "[Raw content]" }
-  ]
-}
-```
-
-### Critical Rules
-
-1. **Use `pictures[]` array** - Array structure helps Gemini enter "loop execution" mode for batch generation.
-
-2. **Add image trigger phrase** - Must include "请为我绘制 N 张图片（generate N images）" to trigger image generation mode.
-
-3. **Role as "绘制者" not "导演"** - Use "信息图绘制者" (illustrator) not "视觉导演" (director) to trigger actual drawing behavior.
-
-4. **Separate instruction from style** - `instruction` = what to do + role; `style` = visual rules only.
-
-5. **Pass complete style** - Include the full style prompt from `styles/style-light.md`, don't summarize.
-
-6. **Content granularity** - Judge by information density, not mechanically by H2 headers.
-
-### Cover Slide Branding (PPT Mode)
-
-For course/series content, the cover slide (`id: 1`) should include:
-
-```json
-{
-  "id": 1,
-  "topic": "封面",
-  "content": "Agent Skills 完全指南\n\n第4节：渐进式披露与 Description 优化\n\n学习目标：理解 Progressive Disclosure 机制"
-}
-```
-
-Structure:
-- **Series name**: e.g., "Agent Skills 完全指南"
-- **Section number**: e.g., "第4节"
-- **Section title**: e.g., "渐进式披露与 Description 优化"
-- **Learning objectives** (optional)
-
-### Output Options (Applies to All Modes)
-
-`--prompt-only` is a **global option** that works with Article, Slides, Cover, and all other modes:
-
-| Output Mode | Parameter | Description | API Required |
-|-------------|-----------|-------------|--------------|
-| Generate Images | Default | Calls Gemini API to generate images | ✅ Yes |
-| Output JSON Prompt | `--prompt-only` | Copy to Gemini Web for manual generation | ❌ No |
-
-**Example Combinations:**
-
-```bash
-# Slides mode + generate images (needs API)
-/smart-illustrator script.md --mode slides
-
-# Slides mode + output JSON only (no API)
-/smart-illustrator script.md --mode slides --prompt-only
-
-# Article mode + generate images (needs API)
+# 为文章生成配图（自动使用 ModelScope）
 /smart-illustrator article.md
 
-# Article mode + output JSON only (no API)
-/smart-illustrator article.md --prompt-only
+# 生成公众号封面
+/smart-illustrator article.md --mode cover --platform wechat
+
+# 生成小红书配图
+/smart-illustrator article.md --platform xiaohongshu
+
+# 指定使用 ModelScope
+/smart-illustrator article.md --provider modelscope
 ```
 
-**Manual Batch Generation (after JSON prompt output):**
+## 📊 提供商对比
+
+| 特性 | ModelScope | Gemini | OpenRouter |
+|------|-----------|--------|------------|
+| **中文支持** | ✅ 原生 | ⚠️ 一般 | ⚠️ 一般 |
+| **免费额度** | ✅ 有 | ❌ 无 | ❌ 无 |
+| **价格** | 💰 免费起 | 💰💰 $0.134/张 | 💰💰 $0.134/张 |
+| **速度** | ⚡ 快 | ⚡ 快 | ⚡ 快 |
+| **质量** | ⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ |
+| **中文文字渲染** | ✅ 清晰 | ⚠️ 可能模糊 | ⚠️ 可能模糊 |
+
+**推荐使用场景：**
+- 🇨🇳 **中文内容** → ModelScope（原生支持，免费额度）
+- 🎨 **创意视觉** → Gemini（质量最高，细节丰富）
+- 💳 **成本控制** → OpenRouter（可设置消费限额）
+
+## 🎯 典型使用场景
+
+### 场景 1：公众号文章配图
 
 ```bash
-export GEMINI_API_KEY=your_key
+# 生成封面 + 3张正文配图
+/smart-illustrator 我的文章.md --platform wechat --count 3
 
+# 输出：
+# 我的文章-cover.png      (2.35:1 公众号封面)
+# 我的文章-image-01.png   (3:4 正文配图)
+# 我的文章-image-02.png
+# 我的文章-image-03.png
+```
+
+### 场景 2：小红书图文
+
+```bash
+# 生成小红书竖图
+/smart-illustrator 小红书文案.md --platform xiaohongshu --count 5
+
+# 输出：5张 3:4 竖图，适合小红书九宫格
+```
+
+### 场景 3：B站视频封面
+
+```bash
+# 生成 B站封面
+/smart-illustrator 视频脚本.md --mode cover --platform youtube
+
+# 输出：16:9 横图，适合 B站/YouTube
+```
+
+### 场景 4：技术博客配图
+
+```bash
+# 生成流程图、架构图等
+/smart-illustrator 技术文章.md --engine auto
+
+# 自动选择：
+# - 复杂流程 → Mermaid（结构化图表）
+# - 概念图 → Excalidraw（手绘风格）
+# - 场景图 → ModelScope（AI 生成）
+```
+
+## 🛠️ 高级功能
+
+### 多引擎系统
+
+工具会根据内容类型自动选择最佳引擎：
+
+```
+内容分析
+    ↓
+需要结构化图表？ → Mermaid（流程图、时序图、架构图）
+    ↓
+需要手绘风格？ → Excalidraw（概念图、草图）
+    ↓
+需要创意视觉？ → ModelScope/Gemini（场景图、隐喻图）
+```
+
+### 风格定制
+
+```bash
+# 使用预设风格
+/smart-illustrator article.md --style light    # 浅色风格
+/smart-illustrator article.md --style dark     # 深色风格
+/smart-illustrator article.md --style minimal  # 极简风格
+
+# 自定义风格
+# 编辑 styles/style-custom.md
+/smart-illustrator article.md --style custom
+```
+
+### 批量生成
+
+```bash
+# 从 JSON 配置批量生成
 npx -y bun ~/.claude/skills/smart-illustrator/scripts/batch-generate.ts \
   --config slides.json \
   --output-dir ./images
+
+# 断点续传（跳过已生成的图片）
+npx -y bun ~/.claude/skills/smart-illustrator/scripts/batch-generate.ts \
+  --config slides.json \
+  --output-dir ./images
+  # 自动跳过已存在的图片
 ```
 
-See `references/slides-prompt-example.json` for a complete example.
+## 📖 API 使用示例
 
-> **💡 Tip**: Batch image generation with JSON in Gemini doesn't have 100% success rate. If generation fails:
-> 1. Retry 1-3 times (usually succeeds)
-> 2. If retries fail, copy individual items from `pictures` array and generate one by one
-
----
-
-## Configuration Files (Style Reuse)
-
-Save common parameters to configuration files for consistent style across series content (courses, newsletters).
-
-### Configuration File Locations
-
-**Priority: CLI Arguments > Project Config > User Config**
-
-| Location | Path | Purpose |
-|----------|------|---------|
-| Project | `{working-dir}/.smart-illustrator/config.json` | Project-specific style (e.g., course series) |
-| User | `~/.smart-illustrator/config.json` | User's global default style |
-
-### Configuration File Format
-
-```json
-{
-  "references": [
-    "./refs/style-ref-01.png",
-    "./refs/style-ref-02.png"
-  ]
-}
-```
-
-**Supported options**:
-- `references`: Array of reference image paths (relative paths are resolved relative to config file directory)
-
-### Usage Examples
+### 单张图片生成
 
 ```bash
-# Initial setup: configure style for course series
-cd ~/my-course
-/smart-illustrator article-01.md --ref ./refs/style-1.png --save-config
+export MODELSCOPE_API_KEY=ms-your-key
 
-# Subsequent generation: auto-apply config
-/smart-illustrator article-02.md  # Automatically uses reference images
-
-# Temporary override: use different reference
-/smart-illustrator article-03.md --ref ./other-ref.png
-
-# Completely ignore config
-/smart-illustrator article-04.md --no-config
-
-# Save to user-level config (global default)
-/smart-illustrator article.md --ref ./my-style.png --save-config-global
+npx -y bun ~/.claude/skills/smart-illustrator/scripts/generate-image.ts \
+  --prompt "一只金色的猫坐在云朵上" \
+  --output cat.png \
+  --provider modelscope
 ```
 
-### Configuration Loading Rules
-
-1. Read user-level config (if exists)
-2. Read project-level config (if exists, overrides user-level)
-3. Apply command-line arguments (overrides config files)
-
-**Typical scenarios**:
-- **Course series**: Save `.smart-illustrator/config.json` in project directory for unified style across chapters
-- **Personal default**: Save `~/.smart-illustrator/config.json` in user directory as global default
-- **Temporary adjustment**: Use `--ref` parameter to temporarily override config without modifying saved settings
-
----
-
-## Cover Mode (YouTube Thumbnails)
-
-Generate high-CTR cover images for YouTube, WeChat, Twitter, and more. Built on YouTuber best practices research.
+### 指定尺寸和比例
 
 ```bash
-# Generate YouTube thumbnail from article
-/smart-illustrator path/to/article.md --mode cover --platform youtube
-
-# Generate with specific topic
-/smart-illustrator --mode cover --platform youtube --topic "Claude 4 Deep Review"
-
-# Generate with visual direction
-/smart-illustrator --mode cover --platform wechat --description "Comparison diagram + tech aesthetic"
+npx -y bun ~/.claude/skills/smart-illustrator/scripts/generate-image.ts \
+  --prompt "科技感的数据可视化界面" \
+  --output dashboard.png \
+  --aspect-ratio 16:9 \
+  --size 2k
 ```
 
-### Supported Platforms
+### 从文件读取 Prompt
 
-All outputs are **2K resolution** (e.g., ~2816×1584 for 16:9).
-
-| Platform | Code | Aspect Ratio |
-|----------|------|--------------|
-| YouTube | `youtube` | 16:9 |
-| WeChat | `wechat` | 2.35:1 |
-| Twitter/X | `twitter` | 1.91:1 |
-| Xiaohongshu | `xiaohongshu` | 3:4 |
-| Landscape | `landscape` | 16:9 |
-| Square | `square` | 1:1 |
-
-### Design Principles (from `references/cover-best-practices.md`)
-
-1. **3-Second Rule**: Instantly convey topic and value
-2. **High Contrast**: Dark background + bright subject
-3. **Single Focus**: Only one visual center
-4. **Minimal Text**: 3-6 words, bold sans-serif
-5. **Curiosity Gap**: Make viewers want to click
-
-### Visual Metaphors for Tech Content
-
-| Concept | Metaphor |
-|---------|----------|
-| AI Assistant | Two collaborative hands, chat bubbles |
-| Efficiency | Upward arrows, stairs, rocket trail |
-| Automation | Gears, assembly line nodes |
-| Learning/Growth | Seed → tree, ascending stairs |
-| Problem → Solution | Maze exit, completed puzzle |
-
----
-
-## Smart Position Detection
-
-The skill analyzes article structure to identify optimal illustration points:
-
-| Signal | Illustration Value |
-|--------|-------------------|
-| Abstract concept first appears | High - helps build mental model |
-| Process/step description | High - visual is clearer than text |
-| Comparison/choice discussion | High - side-by-side is clear |
-| Data/statistics reference | Medium - numbers visualized have impact |
-| Section transition point | Medium - provides visual breathing room |
-| Emotional/story climax | Medium - enhances resonance |
-
----
-
-## Tri-Engine System
-
-The skill automatically selects the best rendering engine based on content, with three-tier priority:
-
-| Priority | Engine | Best For | Output |
-|----------|--------|----------|--------|
-| **1** | **Gemini** | Creative visuals (metaphors, scenes, infographics) | PNG (2K) |
-| **2** | **Excalidraw** | Hand-drawn concept diagrams, comparisons, simple flows | PNG |
-| **3** | **Mermaid** | Complex structured diagrams (flowcharts, sequences, architectures) | PNG |
-
-**Selection logic:**
-- Needs metaphor, emotion, or creative expression → Gemini
-- Needs hand-drawn / informal style, or simple concept relationships → Excalidraw
-- Complex structured flows / architectures → Mermaid
-
-## Illustration Types
-
-| Type | Engine | Best For | Syntax/Style |
-|------|--------|----------|--------------|
-| `process` | Mermaid | Complex workflows | `flowchart` |
-| `architecture` | Mermaid | System components | `block-beta` |
-| `sequence` | Mermaid | API calls, interactions | `sequenceDiagram` |
-| `mindmap` | Mermaid | Knowledge structure | `mindmap` |
-| `state` | Mermaid | State transitions | `stateDiagram` |
-| `concept` | Excalidraw / Gemini | Abstract concepts | Hand-drawn / Center-radial |
-| `comparison` | Excalidraw / Gemini | A vs B, contrasts | Hand-drawn / Left-right split |
-| `data` | Gemini | Statistics, trends | Infographic style |
-| `scene` | Gemini | Stories, scenarios | Narrative illustration |
-| `metaphor` | Gemini | Analogies, symbols | Creative visual |
-| `cover` | Gemini | Article cover | 16:9 dark tech |
-
-### Type × Composition Reference
-
-| Type | Recommended Composition | Elements |
-|------|------------------------|----------|
-| concept | Center-radial, hierarchy | Core icon + surrounding factors |
-| process | Horizontal/vertical flow | Nodes + arrows + labels |
-| comparison | Left-right / top-bottom split | Two columns + corresponding items |
-| data | Chart-style | Numbers prominent + graphical |
-| scene | Narrative illustration | Characters + environment + action |
-| summary | Card grid, bullet points | Structured layout |
-| metaphor | Analogy visual | Creative visual metaphor |
-
-## Style System
-
-### Built-in Styles
-
-| Style | File | Best For |
-|-------|------|----------|
-| Light | `styles/style-light.md` | Content illustrations (default) |
-| Dark | `styles/style-dark.md` | Cover images, marketing |
-| Minimal | `styles/style-minimal.md` | Technical docs, whitepapers |
-| Cover | `styles/style-cover.md` | YouTube thumbnails, social covers (cover mode) |
-
-### Content Illustrations: Light Style
-
-- 3:4 portrait format
-- Light gray background `#F8F9FA`
-- Flat geometric + thin lines
-- See `styles/style-light.md`
-
-### Cover Images: Dark Tech Style
-
-- 16:9 landscape format
-- Deep blue gradient background
-- Line icons + glassmorphism
-- No text
-- See `styles/style-dark.md`
-
-### Custom Styles
-
-Add your own style by creating `styles/style-{name}.md` and use it with `--style {name}`.
-
-## File Structure
-
-```
-smart-illustrator/
-├── SKILL.md                  # Skill definition (Claude Code entry)
-├── CLAUDE.md                 # Project rules (style sync, JSON format)
-├── README.md
-├── README.zh-CN.md           # Chinese documentation
-├── LICENSE
-├── scripts/
-│   ├── generate-image.ts     # Gemini single image generation
-│   ├── batch-generate.ts     # Gemini batch generation (2K, resume support)
-│   ├── mermaid-export.ts     # Mermaid diagram to PNG export
-│   ├── excalidraw-export.ts  # Excalidraw diagram to PNG export
-│   └── package.json          # Script dependencies (Excalidraw export)
-├── styles/
-│   ├── brand-colors.md       # Brand palette (customizable)
-│   ├── style-light.md        # Light style Gemini prompt (default)
-│   ├── style-dark.md         # Dark style Gemini prompt
-│   ├── style-minimal.md      # Minimal style Gemini prompt
-│   └── style-cover.md        # Cover/thumbnail style (cover mode)
-└── references/
-    ├── slides-prompt-example.json  # PPT mode JSON format example
-    ├── cover-best-practices.md     # YouTube thumbnail best practices
-    └── excalidraw-guide.md         # Excalidraw JSON specification
-```
-
-## Customization
-
-Want to use your own brand style?
-
-### Option 1: Modify Existing Styles
-
-1. Edit `styles/brand-colors.md` with your colors
-2. Sync color values in `styles/style-*.md` files
-3. Done! Your Skill now has your own brand identity.
-
-### Option 2: Add New Styles
-
-1. Create `styles/style-{name}.md` (e.g., `style-corporate.md`)
-2. Follow the format in existing style files
-3. Use with `--style {name}`
-
-### Example: Custom Brand Palette
-
-Edit `styles/brand-colors.md`:
-
-```markdown
-## Core / 核心色
-| Your Brand Color | `#XXXXXX` | Your main color |
-
-## Accent / 点缀色
-| Your Accent | `#XXXXXX` | Your accent color |
-```
-
-### Option 3: Customize AI Prompts
-
-All AI prompts are centralized in `prompts/` directory for easy customization:
-
-```
-prompts/
-  ├── README.md              # Prompt management guide
-  ├── varied-styles.md       # Style hints for Varied mode
-  └── learning-analysis.md   # Cover learning analysis prompt
-```
-
-**To customize:**
-
-1. Edit the Markdown files directly (no code changes needed)
-2. Changes take effect immediately on next generation
-3. See `prompts/README.md` for detailed instructions
-
-**Difference from Style System:**
-
-- **Style files** (`styles/*.md`): Define core design rules (composition, colors, constraints)
-- **Prompt templates** (`prompts/*.md`): Define generation strategies (style hints, analysis focus)
-- Both work together: styles set the foundation, prompts add nuance
-
-## Configuration Reference
-
-### Mermaid Engine Parameters
-
-| Parameter | Value | Description |
-|-----------|-------|-------------|
-| `-s` | `3` | 3x scale for high-resolution output |
-| `-w` | `1600` | 1600px width |
-| `-b` | `white` | White background (light style) |
-| `-t` | `neutral` | Neutral theme |
-
-**Full command:**
 ```bash
-mmdc -i input.mmd -o output.png -s 3 -w 1600 -b white
+npx -y bun ~/.claude/skills/smart-illustrator/scripts/generate-image.ts \
+  --prompt-file prompt.md \
+  --output result.png
 ```
 
-**Mermaid Best Practices:**
+## 🔧 配置说明
 
-This skill follows the style guidelines from [mermaid-visualizer](https://github.com/axtonliu/axton-obsidian-visual-skills):
+### 环境变量
 
-- Use `subgraph id["Display Name"]` format for groups with spaces
-- Reference nodes by ID, not display text
-- Avoid `number. space` patterns (use `①②③` or `(1)(2)(3)` instead)
-- Apply consistent color coding per layer/category
-- Use `direction LR` inside subgraphs for horizontal layouts
+```bash
+# ModelScope API（推荐）
+export MODELSCOPE_API_KEY=ms-your-key
 
-### Image Generation Engine Parameters
+# Gemini API（备选）
+export GEMINI_API_KEY=your-gemini-key
 
-#### Gemini Engine
+# OpenRouter API（备选）
+export OPENROUTER_API_KEY=your-openrouter-key
+```
 
-| Parameter | Value | Description |
-|-----------|-------|-------------|
-| Model | `gemini-3-pro-image-preview` | Best for creative illustrations |
-| Resolution | 2K (2816×1536) | High-res output via `imageConfig.imageSize` |
-| Content Aspect | 3:4 portrait | Optimized for article embedding |
-| Cover Aspect | 16:9 landscape | Platform-ready cover format |
-| Cover Text | **None** | Clean visual, title shown by platform |
+### 自动检测优先级
 
-#### ModelScope Z-Image-Turbo Engine
+工具会按以下优先级自动选择提供商：
 
-| Parameter | Value | Description |
-|-----------|-------|-------------|
-| Model | `Tongyi-MAI/Z-Image-Turbo` | Fast text-to-image generation |
-| Resolution | Up to 2K | Configurable via API |
-| Processing | Async task-based | Polls for completion (5s intervals) |
-| Bilingual | English & Chinese | Native support for both languages |
-| Speed | Sub-second inference | On high-end GPUs |
+1. **OpenRouter**（如果设置了 `OPENROUTER_API_KEY`）
+2. **ModelScope**（如果设置了 `MODELSCOPE_API_KEY`）
+3. **Gemini**（如果设置了 `GEMINI_API_KEY`）
 
-### Brand Color Palette (Default: Axton Brand)
+### 手动指定提供商
 
-| Name | Hex | Usage |
-|------|-----|-------|
-| Deep Space Violet | `#2F2B42` | Core color, dark backgrounds |
-| Amber | `#F59E0B` | Accent, highlights, Skills layer |
-| Sky Blue | `#38BDF8` | Accent, secondary highlights, Agents layer |
-| Light Gray | `#F8F9FA` | Light backgrounds, neutral elements |
+```bash
+# 强制使用 ModelScope
+/smart-illustrator article.md --provider modelscope
 
-### Style Files
+# 强制使用 Gemini
+/smart-illustrator article.md --provider gemini
 
-| File | Purpose | Aspect |
-|------|---------|--------|
-| `styles/style-light.md` | Content illustrations (default) | 3:4 portrait |
-| `styles/style-dark.md` | Cover images | 16:9 landscape |
-| `styles/style-minimal.md` | Technical docs | 3:4 portrait |
-| `styles/style-cover.md` | YouTube/social covers | Platform-specific |
-| `styles/brand-colors.md` | Color palette reference | - |
+# 强制使用 OpenRouter
+/smart-illustrator article.md --provider openrouter
+```
 
-## Cost
+## 💡 最佳实践
 
-API pricing comparison:
+### 1. 中文 Prompt 优化
 
-| Provider | Model | Price | Quality | Notes |
-|----------|-------|-------|---------|-------|
-| **Gemini** | `gemini-3-pro-image-preview` | $0.134/image ≈ ¥1/image | 2K, High quality | Best for creative visuals |
-| **ModelScope** | `Tongyi-MAI/Z-Image-Turbo` | Free tier available | 2K, Fast | Bilingual support (EN/CN) |
-| **OpenRouter** | `google/gemini-3-pro-image-preview` | $0.134/image | 2K, High quality | Spending limits available |
+```bash
+# ✅ 好的 Prompt
+"一个现代简约风格的办公室场景，阳光透过落地窗洒在木质办公桌上，桌面摆放着笔记本电脑和咖啡杯，背景是城市天际线"
 
-**API Key Setup:**
-- Gemini: https://aistudio.google.com/apikey
-- ModelScope: https://modelscope.cn/my/myaccesstoken
-- OpenRouter: https://openrouter.ai/keys
+# ❌ 避免过于简单
+"办公室"
 
-## Contributing
+# ❌ 避免过于复杂
+"一个超级复杂的办公室场景，包含100个细节..."
+```
 
-Contributions welcome (low-maintenance project):
+### 2. 平台尺寸选择
 
-- Reproducible bug reports (input + output + steps + environment)
-- Documentation improvements
-- Small PRs (fixes/docs)
+| 平台 | 推荐尺寸 | 参数 |
+|------|---------|------|
+| 公众号封面 | 2.35:1 | `--platform wechat` |
+| 公众号正文 | 3:4 | 默认 |
+| 小红书 | 3:4 | `--platform xiaohongshu` |
+| B站封面 | 16:9 | `--platform youtube` |
+| 知乎文章 | 16:9 | `--platform landscape` |
 
-> **Note:** Feature requests may not be acted on due to limited maintenance capacity.
+### 3. 成本优化策略
 
-## Acknowledgments
+```bash
+# 策略 1：优先使用 ModelScope 免费额度
+export MODELSCOPE_API_KEY=ms-your-key
+# 不设置其他 API Key，自动使用 ModelScope
 
-This project builds upon these excellent tools:
+# 策略 2：ModelScope + Gemini 组合
+# 日常使用 ModelScope，重要场合使用 Gemini
+/smart-illustrator daily-article.md  # 自动用 ModelScope
+/smart-illustrator important-cover.md --provider gemini  # 手动指定 Gemini
 
-- [Claude Code](https://docs.anthropic.com/en/docs/claude-code) - Anthropic's AI coding assistant
-- [Mermaid](https://mermaid.js.org/) - Diagramming and charting tool
-- [Mermaid CLI](https://github.com/mermaid-js/mermaid-cli) - Command line interface for Mermaid
-- [Excalidraw](https://excalidraw.com/) - Virtual whiteboard for hand-drawn diagrams
-- [Playwright](https://playwright.dev/) - Browser automation (for Excalidraw PNG export)
-- [Gemini API](https://ai.google.dev/) - Google's image generation API
-- [Bun](https://bun.sh/) - Fast JavaScript runtime
+# 策略 3：批量生成时使用 ModelScope
+npx -y bun batch-generate.ts --config batch.json  # 成本最低
+```
 
-## License
+## 🤝 贡献
 
-MIT License - see [LICENSE](LICENSE) for details.
+欢迎提交 Issue 和 Pull Request！
 
----
+特别欢迎：
+- 🇨🇳 中文场景优化建议
+- 🎨 新的风格模板
+- 📱 新的平台尺寸预设
+- 🐛 Bug 修复
 
-## Author
+## 📄 开源协议
 
-**Axton Liu** - AI Educator & Creator
+MIT License
 
-- Website: [axtonliu.ai](https://www.axtonliu.ai)
-- YouTube: [@AxtonLiu](https://youtube.com/@AxtonLiu)
-- Twitter/X: [@axtonliu](https://twitter.com/axtonliu)
+## 🙏 致谢
 
-### Learn More
+本项目基于 [axtonliu/smart-illustrator](https://github.com/axtonliu/smart-illustrator) 开发，感谢原作者的优秀工作。
 
-- [MAPS™ AI Agent Course](https://www.axtonliu.ai/aiagent) - Systematic AI agent skills training
-- [Agent Skills Resource Library](https://www.axtonliu.ai/agent-skills) - Claude Code Skills collection and guides
-- [Claude Skills: A Systematic Guide](https://www.axtonliu.ai/newsletters/ai-2/posts/claude-agent-skills-maps-framework) - Complete methodology
-- [AI Elite Weekly Newsletter](https://www.axtonliu.ai/newsletters/ai-2) - Weekly AI insights
-- [Free AI Course](https://www.axtonliu.ai/axton-free-course) - Get started with AI
+本分支的主要改进：
+- ✅ 集成 ModelScope Z-Image-Turbo
+- ✅ 优化中文支持
+- ✅ 添加免费额度选项
+- ✅ 增强中文平台适配
 
 ---
 
-MIT License © [Axton Liu](https://www.axtonliu.ai)
+**Made with ❤️ for Chinese Content Creators**
+
+如有问题，欢迎提 Issue：https://github.com/yuezheng2006/smart-illustrator/issues
