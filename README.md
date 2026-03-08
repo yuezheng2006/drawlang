@@ -119,7 +119,7 @@ export MODELSCOPE_API_KEY=ms-your-api-key
 
 ```bash
 # 生成封面 + 3张正文配图
-/smart-illustrator 我的文章.md --platform wechat --count 3
+/drawlang 我的文章.md --platform wechat --count 3
 
 # 输出：
 # 我的文章-cover.png      (2.35:1 公众号封面)
@@ -132,7 +132,7 @@ export MODELSCOPE_API_KEY=ms-your-api-key
 
 ```bash
 # 生成小红书竖图
-/smart-illustrator 小红书文案.md --platform xiaohongshu --count 5
+/drawlang 小红书文案.md --platform xiaohongshu --count 5
 
 # 输出：5张 3:4 竖图，适合小红书九宫格
 ```
@@ -141,7 +141,7 @@ export MODELSCOPE_API_KEY=ms-your-api-key
 
 ```bash
 # 生成 B站封面
-/smart-illustrator 视频脚本.md --mode cover --platform youtube
+/drawlang 视频脚本.md --mode cover --platform youtube
 
 # 输出：16:9 横图，适合 B站/YouTube
 ```
@@ -150,7 +150,7 @@ export MODELSCOPE_API_KEY=ms-your-api-key
 
 ```bash
 # 生成流程图、架构图等
-/smart-illustrator 技术文章.md --engine auto
+/drawlang 技术文章.md --engine auto
 
 # 自动选择：
 # - 复杂流程 → Mermaid（结构化图表）
@@ -178,25 +178,25 @@ export MODELSCOPE_API_KEY=ms-your-api-key
 
 ```bash
 # 使用预设风格
-/smart-illustrator article.md --style light    # 浅色风格
-/smart-illustrator article.md --style dark     # 深色风格
-/smart-illustrator article.md --style minimal  # 极简风格
+/drawlang article.md --style light    # 浅色风格
+/drawlang article.md --style dark     # 深色风格
+/drawlang article.md --style minimal  # 极简风格
 
 # 自定义风格
 # 编辑 styles/style-custom.md
-/smart-illustrator article.md --style custom
+/drawlang article.md --style custom
 ```
 
 ### 批量生成
 
 ```bash
 # 从 JSON 配置批量生成
-npx -y bun ~/.claude/skills/smart-illustrator/scripts/batch-generate.ts \
+npx -y bun ~/.claude/skills/drawlang/scripts/batch-generate.ts \
   --config slides.json \
   --output-dir ./images
 
 # 断点续传（跳过已生成的图片）
-npx -y bun ~/.claude/skills/smart-illustrator/scripts/batch-generate.ts \
+npx -y bun ~/.claude/skills/drawlang/scripts/batch-generate.ts \
   --config slides.json \
   --output-dir ./images
   # 自动跳过已存在的图片
@@ -209,7 +209,7 @@ npx -y bun ~/.claude/skills/smart-illustrator/scripts/batch-generate.ts \
 ```bash
 export MODELSCOPE_API_KEY=ms-your-key
 
-npx -y bun ~/.claude/skills/smart-illustrator/scripts/generate-image.ts \
+npx -y bun ~/.claude/skills/drawlang/scripts/generate-image.ts \
   --prompt "一只金色的猫坐在云朵上" \
   --output cat.png \
   --provider modelscope
@@ -218,7 +218,7 @@ npx -y bun ~/.claude/skills/smart-illustrator/scripts/generate-image.ts \
 ### 指定尺寸和比例
 
 ```bash
-npx -y bun ~/.claude/skills/smart-illustrator/scripts/generate-image.ts \
+npx -y bun ~/.claude/skills/drawlang/scripts/generate-image.ts \
   --prompt "科技感的数据可视化界面" \
   --output dashboard.png \
   --aspect-ratio 16:9 \
@@ -228,7 +228,7 @@ npx -y bun ~/.claude/skills/smart-illustrator/scripts/generate-image.ts \
 ### 从文件读取 Prompt
 
 ```bash
-npx -y bun ~/.claude/skills/smart-illustrator/scripts/generate-image.ts \
+npx -y bun ~/.claude/skills/drawlang/scripts/generate-image.ts \
   --prompt-file prompt.md \
   --output result.png
 ```
@@ -260,13 +260,13 @@ export OPENROUTER_API_KEY=your-openrouter-key
 
 ```bash
 # 强制使用 ModelScope
-/smart-illustrator article.md --provider modelscope
+/drawlang article.md --provider modelscope
 
 # 强制使用 Gemini
-/smart-illustrator article.md --provider gemini
+/drawlang article.md --provider gemini
 
 # 强制使用 OpenRouter
-/smart-illustrator article.md --provider openrouter
+/drawlang article.md --provider openrouter
 ```
 
 ## 💡 最佳实践
@@ -303,8 +303,8 @@ export MODELSCOPE_API_KEY=ms-your-key
 
 # 策略 2：ModelScope + Gemini 组合
 # 日常使用 ModelScope，重要场合使用 Gemini
-/smart-illustrator daily-article.md  # 自动用 ModelScope
-/smart-illustrator important-cover.md --provider gemini  # 手动指定 Gemini
+/drawlang daily-article.md  # 自动用 ModelScope
+/drawlang important-cover.md --provider gemini  # 手动指定 Gemini
 
 # 策略 3：批量生成时使用 ModelScope
 npx -y bun batch-generate.ts --config batch.json  # 成本最低
@@ -338,4 +338,4 @@ MIT License
 
 **Made with ❤️ for Chinese Content Creators**
 
-如有问题，欢迎提 Issue：https://github.com/yuezheng2006/smart-illustrator/issues
+如有问题，欢迎提 Issue：https://github.com/yuezheng2006/drawlang/issues

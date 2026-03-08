@@ -4,8 +4,8 @@
  * Mermaid Diagram Export Script
  *
  * Usage:
- *   npx -y bun ~/.claude/skills/smart-illustrator/scripts/mermaid-export.ts --input diagram.mmd --output diagram.png
- *   npx -y bun ~/.claude/skills/smart-illustrator/scripts/mermaid-export.ts --input diagram.mmd --output diagram.png --theme dark
+ *   npx -y bun ~/.claude/skills/drawlang/scripts/mermaid-export.ts --input diagram.mmd --output diagram.png
+ *   npx -y bun ~/.claude/skills/drawlang/scripts/mermaid-export.ts --input diagram.mmd --output diagram.png --theme dark
  *
  * Prerequisites:
  *   npm install -g @mermaid-js/mermaid-cli

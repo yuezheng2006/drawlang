@@ -4,8 +4,8 @@
  * Image Generation Script (OpenRouter / Gemini API)
  *
  * Usage:
- *   npx -y bun ~/.claude/skills/smart-illustrator/scripts/generate-image.ts --prompt "A cute cat" --output cat.png
- *   npx -y bun ~/.claude/skills/smart-illustrator/scripts/generate-image.ts --prompt-file prompt.md --output image.png
+ *   npx -y bun ~/.claude/skills/drawlang/scripts/generate-image.ts --prompt "A cute cat" --output cat.png
+ *   npx -y bun ~/.claude/skills/drawlang/scripts/generate-image.ts --prompt-file prompt.md --output image.png
  *
  * Style-lock (reference images):
  *   npx -y bun generate-image.ts --prompt "..." --ref style-ref.png --output image.png

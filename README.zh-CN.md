@@ -63,7 +63,7 @@
 
 ```bash
 # 中文 Prompt 示例
-/smart-illustrator article.md --prompt "一个温馨的中秋节场景，圆月高挂，家人围坐赏月"
+/drawlang article.md --prompt "一个温馨的中秋节场景，圆月高挂，家人围坐赏月"
 ```
 
 ### 2. 💰 免费额度 + 低成本
@@ -96,10 +96,10 @@
 
 ```bash
 # 克隆项目
-git clone https://github.com/yuezheng2006/smart-illustrator.git ~/.claude/skills/smart-illustrator
+git clone https://github.com/yuezheng2006/drawlang.git ~/.claude/skills/drawlang
 
 # 安装依赖（可选）
-cd ~/.claude/skills/smart-illustrator/scripts
+cd ~/.claude/skills/drawlang/scripts
 npm install
 ```
 
@@ -116,13 +116,13 @@ export MODELSCOPE_API_KEY=ms-你的密钥
 
 ```bash
 # 为文章生成配图
-/smart-illustrator 我的文章.md
+/drawlang 我的文章.md
 
 # 生成公众号封面
-/smart-illustrator 我的文章.md --mode cover --platform wechat
+/drawlang 我的文章.md --mode cover --platform wechat
 
 # 生成小红书配图
-/smart-illustrator 我的文章.md --platform xiaohongshu --count 5
+/drawlang 我的文章.md --platform xiaohongshu --count 5
 ```
 
 ## 📚 使用场景
@@ -133,9 +133,9 @@ export MODELSCOPE_API_KEY=ms-你的密钥
 
 ```bash
 # 一键生成所有配图
-/smart-illustrator 本周文章1.md --platform wechat --count 3
-/smart-illustrator 本周文章2.md --platform wechat --count 3
-/smart-illustrator 本周文章3.md --platform wechat --count 3
+/drawlang 本周文章1.md --platform wechat --count 3
+/drawlang 本周文章2.md --platform wechat --count 3
+/drawlang 本周文章3.md --platform wechat --count 3
 
 # 成本：¥0（使用 ModelScope 免费额度）
 # 时间：每篇 2-3 分钟
@@ -147,7 +147,7 @@ export MODELSCOPE_API_KEY=ms-你的密钥
 
 ```bash
 # 批量生成小红书图文
-/smart-illustrator 今日分享.md --platform xiaohongshu --count 9
+/drawlang 今日分享.md --platform xiaohongshu --count 9
 
 # 输出：9 张 3:4 竖图，完美适配小红书
 ```
@@ -158,8 +158,8 @@ export MODELSCOPE_API_KEY=ms-你的密钥
 
 ```bash
 # 生成 B站封面
-/smart-illustrator 视频脚本1.md --mode cover --platform youtube
-/smart-illustrator 视频脚本2.md --mode cover --platform youtube
+/drawlang 视频脚本1.md --mode cover --platform youtube
+/drawlang 视频脚本2.md --mode cover --platform youtube
 
 # 输出：16:9 横图，适合 B站/YouTube
 ```
@@ -170,7 +170,7 @@ export MODELSCOPE_API_KEY=ms-你的密钥
 
 ```bash
 # 自动识别内容类型，选择最佳引擎
-/smart-illustrator 技术文章.md --engine auto
+/drawlang 技术文章.md --engine auto
 
 # 工具会自动：
 # - 流程图 → 使用 Mermaid 生成
@@ -204,11 +204,11 @@ export MODELSCOPE_API_KEY=ms-你的密钥
 
 ```bash
 # 自动选择（优先级：OpenRouter > ModelScope > Gemini）
-/smart-illustrator article.md
+/drawlang article.md
 
 # 手动指定
-/smart-illustrator article.md --provider modelscope
-/smart-illustrator article.md --provider gemini
+/drawlang article.md --provider modelscope
+/drawlang article.md --provider gemini
 ```
 
 ### 3. 风格定制
@@ -217,18 +217,18 @@ export MODELSCOPE_API_KEY=ms-你的密钥
 
 ```bash
 # 浅色风格（默认）
-/smart-illustrator article.md --style light
+/drawlang article.md --style light
 
 # 深色科技风
-/smart-illustrator article.md --style dark
+/drawlang article.md --style dark
 
 # 极简风格
-/smart-illustrator article.md --style minimal
+/drawlang article.md --style minimal
 
 # 自定义风格
 # 1. 创建 styles/style-custom.md
 # 2. 使用自定义风格
-/smart-illustrator article.md --style custom
+/drawlang article.md --style custom
 ```
 
 ### 4. 批量生成
@@ -237,7 +237,7 @@ export MODELSCOPE_API_KEY=ms-你的密钥
 
 ```bash
 # 从 JSON 配置批量生成
-npx -y bun ~/.claude/skills/smart-illustrator/scripts/batch-generate.ts \
+npx -y bun ~/.claude/skills/drawlang/scripts/batch-generate.ts \
   --config slides.json \
   --output-dir ./images
 
@@ -255,7 +255,7 @@ npx -y bun ~/.claude/skills/smart-illustrator/scripts/batch-generate.ts \
 # 单张图片生成
 export MODELSCOPE_API_KEY=ms-your-key
 
-npx -y bun ~/.claude/skills/smart-illustrator/scripts/generate-image.ts \
+npx -y bun ~/.claude/skills/drawlang/scripts/generate-image.ts \
   --prompt "一只金色的猫坐在云朵上" \
   --output cat.png \
   --provider modelscope
@@ -314,10 +314,10 @@ export MODELSCOPE_API_KEY=ms-your-key
 export GEMINI_API_KEY=your-gemini-key
 
 # 日常文章（自动用 ModelScope）
-/smart-illustrator daily-article.md
+/drawlang daily-article.md
 
 # 重要封面（手动指定 Gemini）
-/smart-illustrator important-cover.md --provider gemini
+/drawlang important-cover.md --provider gemini
 
 # 策略 2：批量生成时优先 ModelScope
 npx -y bun batch-generate.ts --config batch.json
@@ -409,7 +409,7 @@ export OPENROUTER_API_KEY=your-openrouter-key
 - 📱 新的平台尺寸预设
 - 🐛 Bug 修复和功能改进
 
-提交 Issue：https://github.com/yuezheng2006/smart-illustrator/issues
+提交 Issue：https://github.com/yuezheng2006/drawlang/issues
 
 ## 📄 开源协议
 

@@ -5,7 +5,7 @@
 
 ## 测试环境
 - Provider: ModelScope Z-Image-Turbo
-- API Key: $MODELSCOPE_API_KEY (环境变量)
+- API Key: $MODELSCOPE_API_KEY（环境变量，切勿写入真实密钥）
 - Model: Tongyi-MAI/Z-Image-Turbo
 - Size: 2K
 
