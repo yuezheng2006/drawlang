@@ -1,9 +1,18 @@
 {
-  "name": "smart-illustrator-scripts",
-  "version": "0.1.0",
+  "name": "drawlang-scripts",
+  "version": "1.0.0",
   "private": true,
   "type": "module",
+  "scripts": {
+    "test": "bun test",
+    "test:watch": "bun test --watch",
+    "test:coverage": "bun test --coverage"
+  },
   "dependencies": {
     "excalidraw-brute-export-cli": "0.4.0"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "bun-types": "latest"
   }
 }
