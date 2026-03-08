@@ -1,15 +1,39 @@
-# Smart Illustrator - 中文优先的 AI 配图工具
+# DrawLang (绘语) - 中文优先的 AI 配图工具
 
 [English](README.md) | **简体中文**
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![ModelScope](https://img.shields.io/badge/ModelScope-Z--Image--Turbo-blue)](https://modelscope.cn/models/Tongyi-MAI/Z-Image-Turbo)
 
-> **🎯 专为中文内容创作者打造的智能配图工具**
+> **🎯 专为中文内容创作者打造的 AI 配图工具**
 >
-> 原生中文支持 · 免费额度 · 快速生成 · 完美适配公众号/小红书/B站
+> Style × Layout 二维矩阵设计 · ModelScope 原生中文 · 免费额度 · 完美适配中文平台
 
 ![示例](assets/dual-engine-architecture.png)
+
+## 🌟 核心优势
+
+### 1. 🎨 Style × Layout 二维矩阵
+
+**独创二维设计系统**，自由组合视觉风格和信息布局：
+
+```bash
+# Style 控制视觉（颜色、线条、装饰）
+--style notion    # 极简手绘
+--style fresh     # 清新自然
+--style warm      # 温馨友好
+
+# Layout 控制结构（密度、排列）
+--layout sparse      # 稀疏布局（1-2要点）
+--layout balanced    # 平衡布局（3-4要点）
+--layout dense       # 密集布局（5-8要点）
+--layout list        # 列表布局（4-7项）
+--layout comparison  # 对比布局（A vs B）
+
+# 自由组合
+/drawlang article.md --style notion --layout dense
+# = 极简手绘风格 + 高密度知识卡片
+```
 
 ## 🌟 为什么选择这个工具？
 

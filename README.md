@@ -1,32 +1,54 @@
-# Smart Illustrator - 中文优先的 AI 配图工具
+# DrawLang (绘语) - 中文优先的 AI 配图工具
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![ModelScope](https://img.shields.io/badge/ModelScope-Z--Image--Turbo-blue)](https://modelscope.cn/models/Tongyi-MAI/Z-Image-Turbo)
 
 **[中文文档](README.zh-CN.md)** | English
 
-> **🎯 专为中文内容创作者优化的 AI 配图工具**
+> **🎯 专为中文内容创作者打造的 AI 配图工具**
 >
-> 原生支持中文 Prompt，免费额度，快速生成，完美适配公众号、小红书、B站等中文平台
+> Style × Layout 二维矩阵设计 · ModelScope 原生中文 · 免费额度 · 完美适配中文平台
 
 ## 🌟 核心优势
 
-### 1. 🇨🇳 中文原生支持
+### 1. 🎨 Style × Layout 二维矩阵
+
+**独创二维设计系统**，自由组合视觉风格和信息布局：
+
+```bash
+# Style 控制视觉（颜色、线条、装饰）
+--style notion    # 极简手绘
+--style fresh     # 清新自然
+--style warm      # 温馨友好
+
+# Layout 控制结构（密度、排列）
+--layout sparse      # 稀疏布局（1-2要点）
+--layout balanced    # 平衡布局（3-4要点）
+--layout dense       # 密集布局（5-8要点）
+--layout list        # 列表布局（4-7项）
+--layout comparison  # 对比布局（A vs B）
+
+# 自由组合
+/drawlang article.md --style notion --layout dense
+# = 极简手绘风格 + 高密度知识卡片
+```
+
+### 2. 🇨🇳 中文原生支持
 - **ModelScope Z-Image-Turbo**：阿里通义万相模型，原生理解中文 Prompt
 - **双语文本渲染**：图片中的中英文文字清晰可读，无乱码
 - **中文场景优化**：理解中国文化元素和视觉习惯
 
-### 2. 💰 成本优势明显
+### 3. 💰 成本优势明显
 - **免费额度**：ModelScope 提供免费调用额度
 - **按需付费**：超出免费额度后按量计费，成本可控
 - **多提供商切换**：支持 Gemini、OpenRouter 备选，灵活切换
 
-### 3. ⚡ 快速高效
+### 4. ⚡ 快速高效
 - **亚秒级推理**：Z-Image-Turbo 模型针对速度优化
 - **异步处理**：后台生成，不阻塞工作流
 - **批量生成**：支持一次生成多张图片
 
-### 4. 🎨 中文平台适配
+### 5. 🎨 中文平台适配
 - **公众号**：2.35:1 横图，完美适配公众号封面
 - **小红书**：3:4 竖图，符合小红书展示规范
 - **B站**：16:9 横图，适合视频封面
@@ -38,10 +60,10 @@
 
 ```bash
 # 克隆到 Claude Code Skills 目录
-git clone https://github.com/yuezheng2006/smart-illustrator.git ~/.claude/skills/smart-illustrator
+git clone https://github.com/yuezheng2006/drawlang.git ~/.claude/skills/drawlang
 
 # 安装依赖（可选，用于 Excalidraw 和 Mermaid）
-cd ~/.claude/skills/smart-illustrator/scripts
+cd ~/.claude/skills/drawlang/scripts
 npm install
 npx playwright install firefox
 ```
@@ -60,16 +82,19 @@ export MODELSCOPE_API_KEY=ms-your-api-key
 
 ```bash
 # 为文章生成配图（自动使用 ModelScope）
-/smart-illustrator article.md
+/drawlang article.md
+
+# Style × Layout 组合
+/drawlang article.md --style notion --layout dense
 
 # 生成公众号封面
-/smart-illustrator article.md --mode cover --platform wechat
+/drawlang article.md --mode cover --platform wechat
 
 # 生成小红书配图
-/smart-illustrator article.md --platform xiaohongshu
+/drawlang article.md --platform xiaohongshu --style fresh
 
 # 指定使用 ModelScope
-/smart-illustrator article.md --provider modelscope
+/drawlang article.md --provider modelscope
 ```
 
 ## 📊 提供商对比
