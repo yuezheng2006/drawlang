@@ -1,0 +1,99 @@
+graph TB
+    subgraph UserLayer["用户界面"]
+        CLI["CLI 命令<br/>/drawlang article.md --style notion"]
+        PARAMS["参数解析<br/>mode / style / layout / platform"]
+    end
+
+    subgraph ModeRouter["模式路由"]
+        MODE{模式判断}
+        ARTICLE["Article<br/>文章配图"]
+        SLIDES["Slides<br/>演讲信息图"]
+        COVER["Cover<br/>封面图"]
+    end
+
+    subgraph StyleSystem["Style × Layout 矩阵"]
+        STYLE["Style 文件<br/>styles/style-*.md"]
+        LAYOUT["Layout 文件<br/>styles/layouts/layout-*.md"]
+        BRAND["Brand Colors<br/>styles/brand-colors.md"]
+    end
+
+    subgraph EngineRouter["三引擎路由"]
+        ANALYZE{内容分析}
+        GEMINI_E["Gemini 引擎<br/>隐喻 / 创意 / 封面"]
+        EXCALIDRAW_E["Excalidraw 引擎<br/>概念图 / 对比 / 流程"]
+        MERMAID_E["Mermaid 引擎<br/>复杂结构 / 时序"]
+    end
+
+    subgraph ImageGen["图像生成管线"]
+        GEN_SCRIPT["generate-image.ts"]
+        EXCAL_EXPORT["excalidraw-export.ts<br/>JSON → PNG"]
+        MERMAID_EXPORT["mermaid-export.ts<br/>MMD → PNG"]
+    end
+
+    subgraph Providers["多提供商抽象"]
+        OPENROUTER["OpenRouter<br/>google/gemini-3-pro-image-preview"]
+        GEMINI_API["Gemini API<br/>gemini-3-pro-image-preview"]
+        MODELSCOPE["ModelScope<br/>Z-Image-Turbo"]
+    end
+
+    subgraph Learning["学习反馈"]
+        LEARNER["cover-learner.ts"]
+        VISION["Gemini Vision 分析"]
+        PATTERNS["模式库 JSON"]
+    end
+
+    subgraph Output["输出"]
+        MD_OUT["article-image.md"]
+        PNG_OUT["*.png 图片文件"]
+        MMD_SRC[".mmd / .excalidraw 源文件"]
+    end
+
+    CLI --> PARAMS --> MODE
+    MODE --> ARTICLE
+    MODE --> SLIDES
+    MODE --> COVER
+
+    ARTICLE --> STYLE
+    ARTICLE --> LAYOUT
+    SLIDES --> STYLE
+    COVER --> STYLE
+
+    STYLE --> BRAND
+
+    ARTICLE --> ANALYZE
+    ANALYZE --> GEMINI_E
+    ANALYZE --> EXCALIDRAW_E
+    ANALYZE --> MERMAID_E
+    SLIDES --> GEMINI_E
+    COVER --> GEMINI_E
+    GEMINI_E --> GEN_SCRIPT
+    EXCALIDRAW_E --> EXCAL_EXPORT
+    MERMAID_E --> MERMAID_EXPORT
+
+    GEN_SCRIPT --> OPENROUTER
+    GEN_SCRIPT --> GEMINI_API
+    GEN_SCRIPT --> MODELSCOPE
+
+    COVER -.-> LEARNER
+    LEARNER --> VISION
+    VISION --> PATTERNS
+    PATTERNS -.-> COVER
+
+    OPENROUTER --> PNG_OUT
+    GEMINI_API --> PNG_OUT
+    MODELSCOPE --> PNG_OUT
+    EXCAL_EXPORT --> PNG_OUT
+    MERMAID_EXPORT --> PNG_OUT
+
+    PNG_OUT --> MD_OUT
+    EXCAL_EXPORT --> MMD_SRC
+    MERMAID_EXPORT --> MMD_SRC
+
+    style UserLayer fill:#c5f6fa,stroke:#0c8599,color:#1a1a1a
+    style ModeRouter fill:#e5dbff,stroke:#5f3dc4,color:#1a1a1a
+    style StyleSystem fill:#d3f9d8,stroke:#2f9e44,color:#1a1a1a
+    style EngineRouter fill:#ffe3e3,stroke:#c92a2a,color:#1a1a1a
+    style ImageGen fill:#ffe8cc,stroke:#d9480f,color:#1a1a1a
+    style Providers fill:#fff4e6,stroke:#e67700,color:#1a1a1a
+    style Learning fill:#e7f5ff,stroke:#1971c2,color:#1a1a1a
+    style Output fill:#d3f9d8,stroke:#2f9e44,color:#1a1a1a

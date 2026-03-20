@@ -12,7 +12,9 @@ import { readFile, writeFile, mkdir } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
 import { join, basename, extname, dirname, resolve } from 'node:path';
 import { homedir } from 'node:os';
+import { fileURLToPath } from 'node:url';
 
+const __dirname = dirname(fileURLToPath(import.meta.url));
 const USER_CONFIG_DIR = join(homedir(), '.smart-illustrator');
 const LEARNINGS_FILE = join(USER_CONFIG_DIR, 'cover-learnings.md');
 
@@ -47,7 +49,7 @@ interface LearningsData {
  * Load learning analysis prompt from prompts/learning-analysis.md
  */
 async function loadLearningAnalysisPrompt(note?: string): Promise<string> {
-  const promptsDir = resolve(dirname(new URL(import.meta.url).pathname), '../prompts');
+  const promptsDir = resolve(__dirname, '../prompts');
   const analysisPromptPath = resolve(promptsDir, 'learning-analysis.md');
 
   try {
@@ -78,13 +80,13 @@ async function loadLearningAnalysisPrompt(note?: string): Promise<string> {
 请用以下 JSON 格式输出（中文）：
 
 {
-  "composition": "构图描述（如：左侧人物 + 右侧文字、中心聚焦、对比布局等）",
-  "colorScheme": "配色方案（如：深色背景 + 橙色强调、高对比冷暖搭配等）",
-  "textUsage": "文字使用（如：无文字、3-5个大字、数字突出等）",
-  "emotion": "传达的情绪（如：好奇心、紧迫感、专业感、震惊等）",
-  "focusPoint": "视觉焦点（如：人物表情、产品 logo、对比元素等）",
-  "patterns": ["值得学习的模式1", "值得学习的模式2", "..."],
-  "avoidPatterns": ["如果有不好的地方，列出应避免的模式"]
+ "composition": "构图描述（如：左侧人物 + 右侧文字、中心聚焦、对比布局等）",
+ "colorScheme": "配色方案（如：深色背景 + 橙色强调、高对比冷暖搭配等）",
+ "textUsage": "文字使用（如：无文字、3-5个大字、数字突出等）",
+ "emotion": "传达的情绪（如：好奇心、紧迫感、专业感、震惊等）",
+ "focusPoint": "视觉焦点（如：人物表情、产品 logo、对比元素等）",
+ "patterns": ["值得学习的模式1", "值得学习的模式2", "..."],
+ "avoidPatterns": ["如果有不好的地方，列出应避免的模式"]
 }
 
 ${note ? `用户备注：${note}` : ''}
@@ -169,9 +171,9 @@ export async function analyzeCoverImage(
   const base64Image = imageBuffer.toString('base64');
   const ext = extname(imagePath).toLowerCase();
   const mimeType = ext === '.png' ? 'image/png'
-                 : ext === '.jpg' || ext === '.jpeg' ? 'image/jpeg'
-                 : ext === '.webp' ? 'image/webp'
-                 : 'image/png';
+    : ext === '.jpg' || ext === '.jpeg' ? 'image/jpeg'
+    : ext === '.webp' ? 'image/webp'
+    : 'image/png';
 
   console.log(`Analyzing cover image: ${basename(imagePath)}`);
 
@@ -204,14 +206,14 @@ export async function analyzeCoverImage(
       }
     );
 
-    const data = await response.json() as any;
+    const data = (await response.json()) as Record<string, unknown>;
 
     if (data.error) {
-      console.error('Gemini API error:', data.error.message);
+      console.error('Gemini API error:', (data.error as { message?: string }).message);
       return null;
     }
 
-    const textContent = data.candidates?.[0]?.content?.parts?.[0]?.text;
+    const textContent = (data.candidates as Array<{ content?: { parts?: Array<{ text?: string }> } }>)?.[0]?.content?.parts?.[0]?.text;
     if (!textContent) {
       console.error('No analysis result from Gemini');
       return null;
@@ -224,22 +226,21 @@ export async function analyzeCoverImage(
       return null;
     }
 
-    const parsed = JSON.parse(jsonMatch[0]);
+    const parsed = JSON.parse(jsonMatch[0]) as Record<string, unknown>;
 
     return {
       date: new Date().toISOString().split('T')[0],
       source: basename(imagePath),
       elements: {
-        composition: parsed.composition || '',
-        colorScheme: parsed.colorScheme || '',
-        textUsage: parsed.textUsage || '',
-        emotion: parsed.emotion || '',
-        focusPoint: parsed.focusPoint || ''
+        composition: (parsed.composition as string) || '',
+        colorScheme: (parsed.colorScheme as string) || '',
+        textUsage: (parsed.textUsage as string) || '',
+        emotion: (parsed.emotion as string) || '',
+        focusPoint: (parsed.focusPoint as string) || ''
       },
-      patterns: parsed.patterns || [],
-      avoidPatterns: parsed.avoidPatterns || []
+      patterns: (parsed.patterns as string[]) || [],
+      avoidPatterns: (parsed.avoidPatterns as string[]) || []
     };
-
   } catch (error) {
     console.error('Analysis failed:', error);
     return null;
@@ -289,8 +290,8 @@ export async function saveLearning(analysis: CoverAnalysis): Promise<void> {
 - **情绪**: ${analysis.elements.emotion}
 - **焦点**: ${analysis.elements.focusPoint}
 - **学到的模式**:
-${analysis.patterns.map(p => `  - ${p}`).join('\n')}
-${analysis.avoidPatterns.length > 0 ? `- **应避免**:\n${analysis.avoidPatterns.map(p => `  - ${p}`).join('\n')}` : ''}
+${analysis.patterns.map(p => ` - ${p}`).join('\n')}
+${analysis.avoidPatterns.length > 0 ? `- **应避免**:\n${analysis.avoidPatterns.map(p => ` - ${p}`).join('\n')}` : ''}
 `;
 
   // Build full content
@@ -357,13 +358,13 @@ async function main() {
 Cover Learner - Analyze and learn from high-performing cover images
 
 Usage:
-  npx -y bun cover-learner.ts <image-path> [--note "optional note"]
-  npx -y bun cover-learner.ts --show  # Show current learnings
+ npx -y bun cover-learner.ts [--note "optional note"]
+ npx -y bun cover-learner.ts --show # Show current learnings
 
 Examples:
-  npx -y bun cover-learner.ts my-best-thumbnail.png
-  npx -y bun cover-learner.ts cover.png --note "CTR 8.5%, 这个封面效果很好"
-  npx -y bun cover-learner.ts --show
+ npx -y bun cover-learner.ts my-best-thumbnail.png
+ npx -y bun cover-learner.ts cover.png --note "CTR 8.5%, 这个封面效果很好"
+ npx -y bun cover-learner.ts --show
 `);
     process.exit(0);
   }
@@ -398,10 +399,10 @@ Examples:
     console.log(`情绪: ${analysis.elements.emotion}`);
     console.log(`焦点: ${analysis.elements.focusPoint}`);
     console.log('\n学到的模式:');
-    analysis.patterns.forEach(p => console.log(`  ✓ ${p}`));
+    analysis.patterns.forEach(p => console.log(` ✓ ${p}`));
     if (analysis.avoidPatterns.length > 0) {
       console.log('\n应避免:');
-      analysis.avoidPatterns.forEach(p => console.log(`  ✗ ${p}`));
+      analysis.avoidPatterns.forEach(p => console.log(` ✗ ${p}`));
     }
   }
 }

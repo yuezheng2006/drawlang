@@ -1,19 +1,22 @@
 # DrawLang (绘语) - 中文优先的 AI 配图工具
 
-[English](README.md) | **简体中文**
+[English](README.md) | **简体中文** | [源码](https://github.com/yuezheng2006/drawlang)
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![ModelScope](https://img.shields.io/badge/ModelScope-Z--Image--Turbo-blue)](https://modelscope.cn/models/Tongyi-MAI/Z-Image-Turbo)
 
-> **🎯 专为中文内容创作者打造的 AI 配图工具**
->
-> Style × Layout 二维矩阵设计 · ModelScope 原生中文 · 免费额度 · 完美适配中文平台
+> **把文章变成配图。** Style × Layout 二维矩阵 · ModelScope 原生中文 · 免费额度
 
-![示例](assets/dual-engine-architecture.png)
+![示例](assets/tri-engine-architecture.png)
 
-## 🌟 核心优势
+## 亮点
 
-### 1. 🎨 Style × Layout 二维矩阵
+- **文章配图** — 分析文章结构，智能生成 3-5 张配图
+- **PPT/Slides** — 批量信息图，支持断点续传
+- **三引擎** — Gemini / Excalidraw / Mermaid 自动路由
+- **ModelScope 优先** — 中文原生、免费额度
+
+### Style × Layout 二维矩阵
 
 **独创二维设计系统**，自由组合视觉风格和信息布局：
 
@@ -79,18 +82,7 @@
 - Gemini：¥100
 - DALL-E 3：¥200
 
-### 3. 🎨 完美适配中文平台
-
-预设了所有主流中文平台的尺寸：
-
-| 平台 | 尺寸 | 用途 | 命令 |
-|------|------|------|------|
-| 公众号 | 2.35:1 | 封面图 | `--platform wechat` |
-| 小红书 | 3:4 | 竖图 | `--platform xiaohongshu` |
-| B站 | 16:9 | 视频封面 | `--platform youtube` |
-| 知乎 | 16:9 | 文章配图 | `--platform landscape` |
-
-## 🚀 5 分钟快速上手
+## 快速上手
 
 ### 步骤 1：安装工具
 
@@ -115,67 +107,38 @@ export MODELSCOPE_API_KEY=ms-你的密钥
 ### 步骤 3：开始使用
 
 ```bash
-# 为文章生成配图
+# 文章配图
 /drawlang 我的文章.md
 
-# 生成公众号封面
-/drawlang 我的文章.md --mode cover --platform wechat
+# PPT 批量信息图
+/drawlang script.md --mode slides
 
-# 生成小红书配图
-/drawlang 我的文章.md --platform xiaohongshu --count 5
+# Cover 封面图
+/drawlang 我的文章.md --mode cover --platform youtube
+/drawlang --mode cover --platform wechat --topic "AI 时代的产品思维"
+
+# 不生成封面图
+/drawlang 我的文章.md --no-cover
+
+# 指定风格
+/drawlang 我的文章.md --style notion --layout dense
 ```
 
-## 📚 使用场景
+## 内置命令
 
-### 场景 1：公众号运营
+| 模式 | 命令 | 说明 |
+|------|------|------|
+| **article** | `article.md` | 文章配图 |
+| **slides** | `script.md --mode slides` | 批量信息图 |
+| **cover** | `article.md --mode cover --platform youtube` | 封面图（YouTube/公众号/Twitter/小红书） |
 
-**需求**：每周发布 3 篇文章，每篇需要 1 个封面 + 3 张配图
+## 使用场景
 
-```bash
-# 一键生成所有配图
-/drawlang 本周文章1.md --platform wechat --count 3
-/drawlang 本周文章2.md --platform wechat --count 3
-/drawlang 本周文章3.md --platform wechat --count 3
-
-# 成本：¥0（使用 ModelScope 免费额度）
-# 时间：每篇 2-3 分钟
-```
-
-### 场景 2：小红书博主
-
-**需求**：每天发布 1-2 条图文，每条需要 5-9 张竖图
+### 技术博客配图
 
 ```bash
-# 批量生成小红书图文
-/drawlang 今日分享.md --platform xiaohongshu --count 9
-
-# 输出：9 张 3:4 竖图，完美适配小红书
-```
-
-### 场景 3：B站 UP 主
-
-**需求**：每周发布 2 个视频，需要封面图
-
-```bash
-# 生成 B站封面
-/drawlang 视频脚本1.md --mode cover --platform youtube
-/drawlang 视频脚本2.md --mode cover --platform youtube
-
-# 输出：16:9 横图，适合 B站/YouTube
-```
-
-### 场景 4：技术博客
-
-**需求**：技术文章需要流程图、架构图等
-
-```bash
-# 自动识别内容类型，选择最佳引擎
+# 自动选择引擎：Mermaid / Excalidraw / ModelScope
 /drawlang 技术文章.md --engine auto
-
-# 工具会自动：
-# - 流程图 → 使用 Mermaid 生成
-# - 架构图 → 使用 Excalidraw 生成
-# - 场景图 → 使用 ModelScope 生成
 ```
 
 ## 🎯 核心功能

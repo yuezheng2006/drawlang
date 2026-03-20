@@ -3,15 +3,18 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![ModelScope](https://img.shields.io/badge/ModelScope-Z--Image--Turbo-blue)](https://modelscope.cn/models/Tongyi-MAI/Z-Image-Turbo)
 
-**[中文文档](README.zh-CN.md)** | English
+**[中文文档](README.zh-CN.md)** | English | [源码](https://github.com/yuezheng2006/drawlang)
 
-> **🎯 专为中文内容创作者打造的 AI 配图工具**
->
-> Style × Layout 二维矩阵设计 · ModelScope 原生中文 · 免费额度 · 完美适配中文平台
+> **把文章变成配图。** Style × Layout 二维矩阵 · ModelScope 原生中文 · 免费额度
 
-## 🌟 核心优势
+## 亮点
 
-### 1. 🎨 Style × Layout 二维矩阵
+- **文章配图** — 分析文章结构，智能生成 3-5 张配图
+- **PPT/Slides** — 批量信息图，支持断点续传
+- **三引擎** — Gemini（创意）/ Excalidraw（手绘）/ Mermaid（流程图）自动路由
+- **ModelScope 优先** — 中文原生、免费额度
+
+### Style × Layout 二维矩阵
 
 **独创二维设计系统**，自由组合视觉风格和信息布局：
 
@@ -33,28 +36,7 @@
 # = 极简手绘风格 + 高密度知识卡片
 ```
 
-### 2. 🇨🇳 中文原生支持
-- **ModelScope Z-Image-Turbo**：阿里通义万相模型，原生理解中文 Prompt
-- **双语文本渲染**：图片中的中英文文字清晰可读，无乱码
-- **中文场景优化**：理解中国文化元素和视觉习惯
-
-### 3. 💰 成本优势明显
-- **免费额度**：ModelScope 提供免费调用额度
-- **按需付费**：超出免费额度后按量计费，成本可控
-- **多提供商切换**：支持 Gemini、OpenRouter 备选，灵活切换
-
-### 4. ⚡ 快速高效
-- **亚秒级推理**：Z-Image-Turbo 模型针对速度优化
-- **异步处理**：后台生成，不阻塞工作流
-- **批量生成**：支持一次生成多张图片
-
-### 5. 🎨 中文平台适配
-- **公众号**：2.35:1 横图，完美适配公众号封面
-- **小红书**：3:4 竖图，符合小红书展示规范
-- **B站**：16:9 横图，适合视频封面
-- **知乎/简书**：多种尺寸预设
-
-## 🚀 快速开始
+## 快速开始
 
 ### 安装
 
@@ -81,19 +63,23 @@ export MODELSCOPE_API_KEY=ms-your-api-key
 ### 基本使用
 
 ```bash
-# 为文章生成配图（自动使用 ModelScope）
+# 文章配图（默认 ModelScope）
 /drawlang article.md
 
 # Style × Layout 组合
 /drawlang article.md --style notion --layout dense
 
-# 生成公众号封面
-/drawlang article.md --mode cover --platform wechat
+# PPT 批量信息图
+/drawlang script.md --mode slides
 
-# 生成小红书配图
-/drawlang article.md --platform xiaohongshu --style fresh
+# Cover 封面图
+/drawlang article.md --mode cover --platform youtube
+/drawlang --mode cover --platform youtube --topic "Claude 4 深度评测"
 
-# 指定使用 ModelScope
+# 不生成封面图
+/drawlang article.md --no-cover
+
+# 指定提供商
 /drawlang article.md --provider modelscope
 ```
 
@@ -113,52 +99,15 @@ export MODELSCOPE_API_KEY=ms-your-api-key
 - 🎨 **创意视觉** → Gemini（质量最高，细节丰富）
 - 💳 **成本控制** → OpenRouter（可设置消费限额）
 
-## 🎯 典型使用场景
+## 内置命令
 
-### 场景 1：公众号文章配图
+| 模式 | 命令 | 说明 |
+|------|------|------|
+| **article** | `article.md` | 文章配图，自动路由三引擎 |
+| **slides** | `script.md --mode slides` | 批量信息图 |
+| **cover** | `article.md --mode cover --platform youtube` | 封面图（YouTube/公众号/Twitter/小红书） |
 
-```bash
-# 生成封面 + 3张正文配图
-/drawlang 我的文章.md --platform wechat --count 3
-
-# 输出：
-# 我的文章-cover.png      (2.35:1 公众号封面)
-# 我的文章-image-01.png   (3:4 正文配图)
-# 我的文章-image-02.png
-# 我的文章-image-03.png
-```
-
-### 场景 2：小红书图文
-
-```bash
-# 生成小红书竖图
-/drawlang 小红书文案.md --platform xiaohongshu --count 5
-
-# 输出：5张 3:4 竖图，适合小红书九宫格
-```
-
-### 场景 3：B站视频封面
-
-```bash
-# 生成 B站封面
-/drawlang 视频脚本.md --mode cover --platform youtube
-
-# 输出：16:9 横图，适合 B站/YouTube
-```
-
-### 场景 4：技术博客配图
-
-```bash
-# 生成流程图、架构图等
-/drawlang 技术文章.md --engine auto
-
-# 自动选择：
-# - 复杂流程 → Mermaid（结构化图表）
-# - 概念图 → Excalidraw（手绘风格）
-# - 场景图 → ModelScope（AI 生成）
-```
-
-## 🛠️ 高级功能
+## 高级功能
 
 ### 多引擎系统
 
@@ -284,30 +233,15 @@ export OPENROUTER_API_KEY=your-openrouter-key
 "一个超级复杂的办公室场景，包含100个细节..."
 ```
 
-### 2. 平台尺寸选择
-
-| 平台 | 推荐尺寸 | 参数 |
-|------|---------|------|
-| 公众号封面 | 2.35:1 | `--platform wechat` |
-| 公众号正文 | 3:4 | 默认 |
-| 小红书 | 3:4 | `--platform xiaohongshu` |
-| B站封面 | 16:9 | `--platform youtube` |
-| 知乎文章 | 16:9 | `--platform landscape` |
-
-### 3. 成本优化策略
+### 成本优化
 
 ```bash
-# 策略 1：优先使用 ModelScope 免费额度
+# 优先 ModelScope（免费额度）
 export MODELSCOPE_API_KEY=ms-your-key
-# 不设置其他 API Key，自动使用 ModelScope
+/drawlang article.md  # 自动用 ModelScope
 
-# 策略 2：ModelScope + Gemini 组合
-# 日常使用 ModelScope，重要场合使用 Gemini
-/drawlang daily-article.md  # 自动用 ModelScope
-/drawlang important-cover.md --provider gemini  # 手动指定 Gemini
-
-# 策略 3：批量生成时使用 ModelScope
-npx -y bun batch-generate.ts --config batch.json  # 成本最低
+# 重要场合用 Gemini
+/drawlang article.md --provider gemini
 ```
 
 ## 🤝 贡献
@@ -315,9 +249,8 @@ npx -y bun batch-generate.ts --config batch.json  # 成本最低
 欢迎提交 Issue 和 Pull Request！
 
 特别欢迎：
-- 🇨🇳 中文场景优化建议
+- 🇨🇳 中文场景优化
 - 🎨 新的风格模板
-- 📱 新的平台尺寸预设
 - 🐛 Bug 修复
 
 ## 📄 开源协议

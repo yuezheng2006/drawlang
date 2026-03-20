@@ -135,7 +135,7 @@ describe('Image Generation', () => {
       expect(outputName).toMatch(/^test-article-image-\d{2}\.png$/);
     });
 
-    test('should generate cover filename', () => {
+    test('should generate correct cover filename', () => {
       const baseName = 'test-article';
       const coverName = `${baseName}-cover.png`;
       expect(coverName).toBe('test-article-cover.png');

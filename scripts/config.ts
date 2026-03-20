@@ -4,7 +4,7 @@
  */
 
 import { existsSync, readFileSync, writeFileSync, mkdirSync } from 'fs';
-import { join, dirname, resolve, isAbsolute } from 'path';
+import { join, resolve, isAbsolute, relative } from 'path';
 import { homedir } from 'os';
 
 export interface Config {
@@ -140,25 +140,4 @@ export function mergeConfig(
   }
 
   return merged;
-}
-
-// Helper: path.relative for cross-platform
-function relative(from: string, to: string): string {
-  // Simple implementation - for production use path.relative from 'path'
-  const fromParts = from.split(/[/\\]/);
-  const toParts = to.split(/[/\\]/);
-
-  let i = 0;
-  while (i < fromParts.length && i < toParts.length && fromParts[i] === toParts[i]) {
-    i++;
-  }
-
-  const upCount = fromParts.length - i;
-  const remainingPath = toParts.slice(i).join('/');
-
-  if (upCount === 0) {
-    return remainingPath || '.';
-  }
-
-  return '../'.repeat(upCount) + remainingPath;
 }

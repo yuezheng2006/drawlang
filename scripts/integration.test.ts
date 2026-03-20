@@ -131,7 +131,7 @@ describe('Integration Tests', () => {
     });
 
     test('should support nested output directories', () => {
-      const nestedDir = join(TEST_DIR, 'output', 'images', 'covers');
+      const nestedDir = join(TEST_DIR, 'output', 'images');
       if (!existsSync(nestedDir)) {
         mkdirSync(nestedDir, { recursive: true });
       }
@@ -166,7 +166,7 @@ describe('Integration Tests', () => {
 
   describe('Configuration Persistence', () => {
     test('should save and load config', () => {
-      const configDir = join(TEST_DIR, '.drawlang');
+      const configDir = join(TEST_DIR, '.smart-illustrator');
       const configFile = join(configDir, 'config.json');
 
       if (!existsSync(configDir)) {

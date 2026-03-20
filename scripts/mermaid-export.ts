@@ -124,7 +124,7 @@ Options:
 
 Themes:
   light   Neutral theme with white background (for content illustrations)
-  dark    Dark theme with transparent background (for cover images)
+  dark    Dark theme with transparent background
 
 Prerequisites:
   npm install -g @mermaid-js/mermaid-cli
